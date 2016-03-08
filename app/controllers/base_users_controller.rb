@@ -1,4 +1,5 @@
 class BaseUsersController < ApplicationController
+  require 'basecrm'
   before_action :set_base_user, only: [:show, :edit, :update, :destroy]
 
   # GET /base_users
@@ -59,6 +60,66 @@ class BaseUsersController < ApplicationController
       format.html { redirect_to base_users_url, notice: 'Base user was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def get_all_users
+    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
+    puts "_"*100
+    client.contacts.all.each do |user|
+      #here's going to be the getting all users into local database
+      puts user
+    end
+    puts client.contacts.all.count
+    puts "_"*100
+    redirect_to '/'
+  end
+
+  def get_user_info
+    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
+    user = client.users.all.first    
+    puts "_"*100
+    puts user
+    puts "_"*100
+    redirect_to '/'
+  end
+
+  def get_all_notes
+    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
+    puts "_"*100
+    client.notes.all.each do |note|
+      puts note
+    end
+    puts client.notes.all.count
+    puts "_"*100
+    redirect_to '/'
+  end
+
+  def get_user_notes #modify this to take a user id and max user engagement
+    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
+    user = client.users.all.first    
+    user_notes = client.notes.where(creator_id: user.id)
+    notes_last_30_days = []
+    notes_30_60_days = []
+    puts "_"*100
+    user_notes.each do |note|
+      if note.created_at < Time.now && note.created_at >= (Time.now - 30.days)
+        notes_last_30_days << note
+      elsif note.created_at < (Time.now - 30.days) && note.created_at >= (Time.now - 60.days)
+        notes_30_60_days << note
+      else
+        next
+      end
+    end
+    puts notes_last_30_days.count
+    puts notes_30_60_days.count
+    puts "_"*100
+    #ultimately this returns the two arrays for use by the get_user_engagement_score action
+    redirect_to '/'
+  end
+
+  def get_thirty_day_user_engagement_score(thirty_day_notes, thirty_day_max_notes) #takes notes for last 30 and 60 days and max engagement of the group so far 
+      #in this case the max is 100, user is 20
+    return thirty_day_notes/thirty_day_max_notes*5
   end
 
   private
