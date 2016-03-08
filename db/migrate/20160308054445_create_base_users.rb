@@ -3,6 +3,8 @@ class CreateBaseUsers < ActiveRecord::Migration
     create_table :base_users do |t|
       t.string :current_month_engagement
       t.string :previous_month_engagement
+      t.string :current_month_engagement_score
+      t.string :previous_month_engagement_score
       t.string :role
       t.string :other
 

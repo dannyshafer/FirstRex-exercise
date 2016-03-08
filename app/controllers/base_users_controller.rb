@@ -1,5 +1,7 @@
 class BaseUsersController < ApplicationController
   require 'basecrm'
+  require 'httparty'
+  require 'json'
   before_action :set_base_user, only: [:show, :edit, :update, :destroy]
 
   # GET /base_users
@@ -64,12 +66,28 @@ class BaseUsersController < ApplicationController
 
   def get_all_users
     client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
-    puts "_"*100
+    users = []
+    max_30_day_notes = 0
+    max_60_day_notes = 0
     client.contacts.all.each do |user|
-      #here's going to be the getting all users into local database
-      puts user
+      users << user
+      notes_last_30_days, notes_last_60_days = get_user_notes(user.id)
+      @user = BaseUser.new(id: user.id)
+      @user.current_month_engagement = notes_last_30_days
+      @user.previous_month_engagement = notes_last_60_days
+      @user.save
+      # if notes_last_30_days > max_30_day_notes
+      #   max_30_day_notes = notes_last_30_days
+      # end
+      # if notes_last_60_days > max_60_day_notes
+      #   max_60_day_notes = notes_last_60_days
+      # end
     end
-    puts client.contacts.all.count
+    # users.each do |user|
+    #   @user = BaseUser.find_by_id(user.id)
+    #   @user.current_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_30_day_notes)
+    #   @user.previous_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_60_day_notes)
+    # end
     puts "_"*100
     redirect_to '/'
   end
@@ -94,32 +112,30 @@ class BaseUsersController < ApplicationController
     redirect_to '/'
   end
 
-  def get_user_notes #modify this to take a user id and max user engagement
+  def get_user_notes
     client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
-    user = client.users.all.first    
-    user_notes = client.notes.where(creator_id: user.id)
-    notes_last_30_days = []
-    notes_30_60_days = []
-    puts "_"*100
-    user_notes.each do |note|
-      if note.created_at < Time.now && note.created_at >= (Time.now - 30.days)
-        notes_last_30_days << note
-      elsif note.created_at < (Time.now - 30.days) && note.created_at >= (Time.now - 60.days)
-        notes_30_60_days << note
-      else
-        next
-      end
-    end
-    puts notes_last_30_days.count
-    puts notes_30_60_days.count
-    puts "_"*100
-    #ultimately this returns the two arrays for use by the get_user_engagement_score action
+    puts client.notes.all
+    # a.each do |note|
+    #   puts note
+    # end
+    # if note.created_at < Time.now && note.created_at >= (Time.now - 30.days)
+    #   notes_last_30_days += 1
+    #   puts "last 30 days"
+    # elsif note.created_at < (Time.now - 30.days) && note.created_at >= (Time.now - 60.days)
+    #   notes_30_60_days += 1
+    #   puts "last 60 days"
+    # else
+    #   puts "no notes from this unengaged person"
+    # end
     redirect_to '/'
   end
 
-  def get_thirty_day_user_engagement_score(thirty_day_notes, thirty_day_max_notes) #takes notes for last 30 and 60 days and max engagement of the group so far 
-      #in this case the max is 100, user is 20
-    return thirty_day_notes/thirty_day_max_notes*5
+  def get_thirty_day_user_engagement_score(thirty_day_notes, thirty_day_max_notes) 
+    return ((thirty_day_notes/thirty_day_max_notes)*5).to_i
+  end
+
+  def get_sixty_day_user_engagement_score(sixty_day_notes, sixty_day_max_notes) 
+    return ((sixty_day_notes/sixty_day_max_notes)*5).to_i
   end
 
   private

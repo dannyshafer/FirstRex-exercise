@@ -19,10 +19,12 @@ ActiveRecord::Schema.define(version: 20160308054445) do
   create_table "base_users", force: :cascade do |t|
     t.string   "current_month_engagement"
     t.string   "previous_month_engagement"
+    t.string   "current_month_engagement_score"
+    t.string   "previous_month_engagement_score"
     t.string   "role"
     t.string   "other"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
   end
 
   create_table "users", force: :cascade do |t|
