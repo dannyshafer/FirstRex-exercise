@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Base Users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Current month engagement</th>
+      <th>Previous month engagement</th>
+      <th>Role</th>
+      <th>Other</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @base_users.each do |base_user| %>
+      <tr>
+        <td><%= base_user.current_month_engagement %></td>
+        <td><%= base_user.previous_month_engagement %></td>
+        <td><%= base_user.role %></td>
+        <td><%= base_user.other %></td>
+        <td><%= link_to 'Show', base_user %></td>
+        <td><%= link_to 'Edit', edit_base_user_path(base_user) %></td>
+        <td><%= link_to 'Destroy', base_user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Base user', new_base_user_path %>

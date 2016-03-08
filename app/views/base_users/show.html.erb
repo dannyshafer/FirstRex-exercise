@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Current month engagement:</strong>
+  <%= @base_user.current_month_engagement %>
+</p>
+
+<p>
+  <strong>Previous month engagement:</strong>
+  <%= @base_user.previous_month_engagement %>
+</p>
+
+<p>
+  <strong>Role:</strong>
+  <%= @base_user.role %>
+</p>
+
+<p>
+  <strong>Other:</strong>
+  <%= @base_user.other %>
+</p>
+
+<%= link_to 'Edit', edit_base_user_path(@base_user) %> |
+<%= link_to 'Back', base_users_path %>

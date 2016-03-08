@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  current_month_engagement: MyString
+  previous_month_engagement: MyString
+  role: MyString
+  other: MyString
+
+two:
+  current_month_engagement: MyString
+  previous_month_engagement: MyString
+  role: MyString
+  other: MyString
