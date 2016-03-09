@@ -67,28 +67,27 @@ class BaseUsersController < ApplicationController
   def get_all_users
     client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
     users = []
-    max_30_day_notes = 0
-    max_60_day_notes = 0
+    thirty_day_notes, sixty_day_notes = get_all_notes
     client.contacts.all.each do |user|
       users << user
-      notes_last_30_days, notes_last_60_days = get_user_notes(user.id)
-      @user = BaseUser.new(id: user.id)
-      @user.current_month_engagement = notes_last_30_days
-      @user.previous_month_engagement = notes_last_60_days
-      @user.save
-      # if notes_last_30_days > max_30_day_notes
-      #   max_30_day_notes = notes_last_30_days
-      # end
-      # if notes_last_60_days > max_60_day_notes
-      #   max_60_day_notes = notes_last_60_days
-      # end
+      @user = BaseUser.create(id: user.id)
     end
-    # users.each do |user|
-    #   @user = BaseUser.find_by_id(user.id)
-    #   @user.current_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_30_day_notes)
-    #   @user.previous_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_60_day_notes)
-    # end
-    puts "_"*100
+    thirty_day_notes.each do |user_id|
+      @user = BaseUser.find_by_id(user_id)
+      @user.current_month_engagement += 1
+    end
+    sixty_day_notes.each do |user_id|
+      @user = BaseUser.find_by_id(user_id)
+      @user.previous_month_engagement += 1
+    end
+    max_30_day_notes = BaseUser.order("current_month_engagement DESC").first
+    max_60_day_notes = BaseUser.order("previous_month_engagement DESC").first
+    #come back here
+    users.each do |user|
+      @user = BaseUser.find_by_id(user.id)
+      @user.current_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_30_day_notes)
+      @user.previous_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_60_day_notes)
+    end
     redirect_to '/'
   end
 
@@ -102,32 +101,28 @@ class BaseUsersController < ApplicationController
   end
 
   def get_all_notes
-    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
-    puts "_"*100
-    client.notes.all.each do |note|
-      puts note
+    thirty_day_notes = []
+    sixty_day_notes = []
+    iterating = true
+    page = 1
+    while iterating do
+      notes = HTTParty.get("https://api.getbase.com/v2/notes?page=#{page}&per_page=100", :headers => {"Accept" => "application/json", "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e", "User-Agent" => "Httparty"})
+      if notes['items'] == nil || notes['items'] == []
+        iterating = false 
+        break
+      else
+        notes['items'].each do |note|
+          if note['data']['created_at'] > (Time.now - 30.days)
+            thirty_day_notes << note['data']['creator_id']
+          elsif note['data']['created_at'] > (Time.now - 60.days)
+            sixty_day_notes << note['data']['creator_id']
+          else
+          end
+        end
+        page += 1
+      end
     end
-    puts client.notes.all.count
-    puts "_"*100
-    redirect_to '/'
-  end
-
-  def get_user_notes
-    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
-    puts client.notes.all
-    # a.each do |note|
-    #   puts note
-    # end
-    # if note.created_at < Time.now && note.created_at >= (Time.now - 30.days)
-    #   notes_last_30_days += 1
-    #   puts "last 30 days"
-    # elsif note.created_at < (Time.now - 30.days) && note.created_at >= (Time.now - 60.days)
-    #   notes_30_60_days += 1
-    #   puts "last 60 days"
-    # else
-    #   puts "no notes from this unengaged person"
-    # end
-    redirect_to '/'
+    return thirty_day_notes, sixty_day_notes
   end
 
   def get_thirty_day_user_engagement_score(thirty_day_notes, thirty_day_max_notes) 
