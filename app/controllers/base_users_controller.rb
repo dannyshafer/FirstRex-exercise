@@ -80,9 +80,12 @@ class BaseUsersController < ApplicationController
       @user = BaseUser.find_by_id(user_id)
       @user.previous_month_engagement += 1
     end
-    max_30_day_notes = BaseUser.order("current_month_engagement DESC").first
-    max_60_day_notes = BaseUser.order("previous_month_engagement DESC").first
-    #come back here
+    max_30_day_notes = BaseUser.order("current_month_engagement DESC").first.current_month_engagement
+    max_60_day_notes = BaseUser.order("previous_month_engagement DESC").first.current_month_engagement
+    puts "_"*100
+    puts max_30_day_notes
+    puts max_60_day_notes
+    puts "_"*100
     users.each do |user|
       @user = BaseUser.find_by_id(user.id)
       @user.current_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_30_day_notes)
@@ -109,20 +112,25 @@ class BaseUsersController < ApplicationController
       notes = HTTParty.get("https://api.getbase.com/v2/notes?page=#{page}&per_page=100", :headers => {"Accept" => "application/json", "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e", "User-Agent" => "Httparty"})
       if notes['items'] == nil || notes['items'] == []
         iterating = false 
-        break
       else
         notes['items'].each do |note|
           if note['data']['created_at'] > (Time.now - 30.days)
+            puts "found one in the last month"
             thirty_day_notes << note['data']['creator_id']
           elsif note['data']['created_at'] > (Time.now - 60.days)
+            puts "found one in the last two months"
             sixty_day_notes << note['data']['creator_id']
           else
+            puts "found nothing B!"
           end
         end
         page += 1
       end
     end
+    print thirty_day_notes 
+    print sixty_day_notes
     return thirty_day_notes, sixty_day_notes
+    render :nothing => true
   end
 
   def get_thirty_day_user_engagement_score(thirty_day_notes, thirty_day_max_notes) 
