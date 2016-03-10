@@ -17,14 +17,15 @@ ActiveRecord::Schema.define(version: 20160308054445) do
   enable_extension "plpgsql"
 
   create_table "base_users", force: :cascade do |t|
-    t.integer  "current_month_engagement"
-    t.integer  "previous_month_engagement"
-    t.integer  "current_month_engagement_score"
-    t.integer  "previous_month_engagement_score"
+    t.integer  "current_month_engagement",        default: 0
+    t.integer  "previous_month_engagement",       default: 0
+    t.float    "current_month_engagement_score",  default: 0.0
+    t.float    "previous_month_engagement_score", default: 0.0
     t.string   "role"
+    t.string   "name"
     t.string   "other"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
   end
 
   create_table "users", force: :cascade do |t|
