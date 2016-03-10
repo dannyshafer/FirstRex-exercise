@@ -67,30 +67,62 @@ class BaseUsersController < ApplicationController
   def get_all_users
     client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
     users = []
-    thirty_day_notes, sixty_day_notes = get_all_notes
-    client.contacts.all.each do |user|
-      users << user
+    thirty_day_notes = ['87136']
+    sixty_day_notes = []
+    iterating = true
+    page = 1
+    # while iterating do
+    #   notes = HTTParty.get("https://api.getbase.com/v2/notes?page=#{page}&per_page=100", :headers => {"Accept" => "application/json", "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e", "User-Agent" => "Httparty"})
+    #   if notes['items'] == nil || notes['items'] == []
+    #     iterating = false 
+    #   else
+    #     notes['items'].each do |note|
+    #       if note['data']['created_at'] > (Time.now - 30.days)
+    #         puts "found one in the last month"
+    #         thirty_day_notes << note['data']['creator_id']
+    #       elsif note['data']['created_at'] > (Time.now - 60.days)
+    #         puts "found one in the last two months"
+    #         sixty_day_notes << note['data']['creator_id']
+    #       else
+    #         puts "found nothing B!"
+    #       end
+    #     end
+    #     page += 1
+    #   end
+    # end
+    puts "made it past the notes"*100
+    thirty_day_notes.uniq.each do |user_id|
+      client.contacts.find(user_id)      
       @user = BaseUser.create(id: user.id)
+      puts "made a user"
     end
+    # sixty_day_notes.uniq.each do |user_id|
+    #   client.contacts.find(user_id)      
+    #   users << user
+    #   @user = BaseUser.create(id: user.id)
+    #   puts "made a user"
+    # end
+    puts "made it past the users"*100
     thirty_day_notes.each do |user_id|
       @user = BaseUser.find_by_id(user_id)
-      @user.current_month_engagement += 1
+      puts @user.inspect
+      # @user.current_month_engagement += 1
     end
+    puts "made it past the first engagement"*100
     sixty_day_notes.each do |user_id|
       @user = BaseUser.find_by_id(user_id)
-      @user.previous_month_engagement += 1
+      puts @user.inspect
+      # @user.previous_month_engagement += 1
     end
-    max_30_day_notes = BaseUser.order("current_month_engagement DESC").first.current_month_engagement
-    max_60_day_notes = BaseUser.order("previous_month_engagement DESC").first.current_month_engagement
-    puts "_"*100
-    puts max_30_day_notes
-    puts max_60_day_notes
-    puts "_"*100
-    users.each do |user|
-      @user = BaseUser.find_by_id(user.id)
-      @user.current_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_30_day_notes)
-      @user.previous_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_60_day_notes)
-    end
+    puts "made it past the second engagement"*100
+    # max_30_day_notes = BaseUser.order("current_month_engagement DESC").first.current_month_engagement
+    # max_60_day_notes = BaseUser.order("previous_month_engagement DESC").first.current_month_engagement
+    # users.each do |user|
+    #   @user = BaseUser.find_by_id(user.id)
+    #   @user.current_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_30_day_notes)
+    #   @user.previous_month_engagement_score = get_thirty_day_user_engagement_score(@user.current_month_engagement, max_60_day_notes)
+    # end
+    # puts "made it past the engagement scores"*100
     redirect_to '/'
   end
 
