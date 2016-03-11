@@ -1,9 +1,6 @@
 == README
 
-A vanilla Rails app that already has Devise users in it so you don't have to go through the whole configuration every time.
-
-Also, configured and ready for Heroku. Good day!
-
 1. Bundle.
 2. Migrate.
-3. Profit.
+3. Set your .env variables
+4. Profit.
