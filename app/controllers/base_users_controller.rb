@@ -138,7 +138,7 @@ class BaseUsersController < ApplicationController
 
     BaseUser.all.each do |user|
       current_month_engagement_score = get_thirty_day_user_engagement_score(user.current_month_engagement, max_thirty_day_notes)
-      previous_month_engagement_score = get_sixty_day_user_engagement_score(user.current_month_engagement, max_sixty_day_notes)
+      previous_month_engagement_score = get_sixty_day_user_engagement_score(user.previous_month_engagement, max_sixty_day_notes)
       user.update_attributes(current_month_engagement_score: current_month_engagement_score, previous_month_engagement_score: previous_month_engagement_score)
     end
   end
