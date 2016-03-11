@@ -1,4 +1,76 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+<script type="text/javascript">
+	$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Trailing 30 days contact engagement'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total numbers of contacts in each engagement tier'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+        },
+
+        series: [{
+            name: 'Scores',
+            colorByPoint: true,
+            data: [{
+                name: '1',
+                y: <%= BaseUser.ones[0] %>,
+                drilldown: '1'
+            }, {
+                name: '2',
+                y: <%= BaseUser.twos[0] %>,
+                drilldown: '2'
+            }, {
+                name: '3',
+                y: <%= BaseUser.threes[0] %>,
+                drilldown: '3'
+            }, {
+                name: '4',
+                y: <%= BaseUser.fours[0] %>,
+                drilldown: '4'
+            }, {
+                name: '5',
+                y: <%= BaseUser.fives[0] %>,
+                drilldown: '5'
+            }]
+        }]
+    });
+});
+</script>
+
 <br><a href="/get_all_users">Get All Users</a>
 <br><a href="/get_user_info">User Info</a>
 <br><a href="/get_all_notes">Get All Notes</a>
 <br><a href="/get_user_notes">User Notes</a>
+
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
