@@ -6,11 +6,11 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'welcome#index'
-  get '/get_all_users' => 'base_users#get_all_users'
-  get '/get_user_info' => 'base_users#get_user_info'
-  get '/get_all_notes' => 'base_users#get_all_notes'
-  get '/get_user_notes' => 'base_users#get_user_notes'
-  get '/post_scores' => 'base_users#post_engagement_score_to_base'
+  # get '/get_all_users' => 'base_users#get_all_users'
+  # get '/get_user_info' => 'base_users#get_user_info'
+  # get '/get_all_notes' => 'base_users#get_all_notes'
+  # get '/get_user_notes' => 'base_users#get_user_notes'
+  # get '/post_scores' => 'base_users#post_engagement_score_to_base'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
