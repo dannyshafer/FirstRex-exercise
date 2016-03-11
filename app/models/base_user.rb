@@ -78,4 +78,20 @@ class BaseUser < ActiveRecord::Base
 		end
 		return BaseUser.where(previous_month_engagement_score: 4...5).count, names
 	end
+
+	def self.average_current_month_engagement_score
+		return BaseUser.average(:current_month_engagement_score).to_f
+	end
+
+	def self.average_previous_month_engagement_score
+		return BaseUser.average(:previous_month_engagement_score).to_f
+	end
+
+	def self.max_current_month_engagement_score
+		return BaseUser.order("current_month_engagement DESC")[2].current_month_engagement
+	end
+
+	def self.max_previous_month_engagement_score
+		return BaseUser.order("previous_month_engagement DESC")[2].previous_month_engagement
+	end
 end

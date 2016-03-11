@@ -4,12 +4,12 @@
 
 <script type="text/javascript">
 	$(function () {
-    $('#container').highcharts({
+    $('#month_current').highcharts({
         chart: {
             type: 'column'
         },
         title: {
-            text: 'Trailing 30 days contact engagement'
+            text: 'Most recent 30 days contact engagement'
         },
         xAxis: {
             type: 'category'
@@ -32,7 +32,6 @@
                 }
             }
         },
-
         tooltip: {
             headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
             pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
@@ -65,6 +64,67 @@
         }]
     });
 });
+$(function () {
+    $('#month_previous').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '30-60 days contact engagement (month prior to last chart)'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total numbers of contacts in each engagement tier'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}'
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+        },
+
+        series: [{
+            name: 'Scores',
+            colorByPoint: true,
+            data: [{
+                name: '1',
+                y: <%= BaseUser.previous_ones[0] %>,
+                drilldown: '1'
+            }, {
+                name: '2',
+                y: <%= BaseUser.previous_twos[0] %>,
+                drilldown: '2'
+            }, {
+                name: '3',
+                y: <%= BaseUser.previous_threes[0] %>,
+                drilldown: '3'
+            }, {
+                name: '4',
+                y: <%= BaseUser.previous_fours[0] %>,
+                drilldown: '4'
+            }, {
+                name: '5',
+                y: <%= BaseUser.previous_fives[0] %>,
+                drilldown: '5'
+            }]
+        }]
+    });
+});
 </script>
 
 <br><a href="/get_all_users">Get All Users</a>
@@ -73,4 +133,5 @@
 <br><a href="/get_user_notes">User Notes</a>
 
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="month_current" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="month_previous" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
