@@ -88,11 +88,9 @@ class BaseUsersController < ApplicationController
       end
     end
     thirty_day_notes.uniq.each do |user_id|
-      # @base_record = client.contacts.find(user_id)
       @user = BaseUser.create(id: user_id)#, name: @base_record.name, role: @base_record.title)
     end
     sixty_day_notes.uniq.each do |user_id|
-      # @base_record = client.contacts.find(user_id)
       if BaseUser.find_by_id(user_id) == nil 
         @user = BaseUser.create(id: user_id)#, name: @base_record.name, role: @base_record.title)
       end      
@@ -127,44 +125,6 @@ class BaseUsersController < ApplicationController
     redirect_to '/'
   end
 
-  # def get_user_info
-  #   client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
-  #   user = client.users.all.first    
-  #   puts "_"*100
-  #   puts user
-  #   puts "_"*100
-  #   redirect_to '/'
-  # end
-
-  # def get_all_notes
-  #   thirty_day_notes = []
-  #   sixty_day_notes = []
-  #   iterating = true
-  #   page = 1
-  #   while iterating do
-  #     notes = HTTParty.get("https://api.getbase.com/v2/notes?page=#{page}&per_page=100", :headers => {"Accept" => "application/json", "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e", "User-Agent" => "Httparty"})
-  #     if notes['items'] == nil || notes['items'] == []
-  #       iterating = false 
-  #     else
-  #       notes['items'].each do |note|
-  #         if note['data']['created_at'] > (Time.now - 30.days)
-  #           puts "found one in the last month"
-  #           # thirty_day_notes << note['data']['creator_id']
-  #           puts note
-  #         elsif note['data']['created_at'] > (Time.now - 60.days)
-  #           puts "found one in the last two months"
-  #           puts note
-  #           # sixty_day_notes << note['data']['creator_id']
-  #         else
-  #           puts "found nothing B!"
-  #         end
-  #       end
-  #       page += 1
-  #     end
-  #   end
-  #   return thirty_day_notes, sixty_day_notes
-  # end
-
   def get_thirty_day_user_engagement_score(thirty_day_notes, thirty_day_max_notes) 
     return ((thirty_day_notes.to_f/thirty_day_max_notes.to_f)*5)
   end
@@ -177,6 +137,12 @@ class BaseUsersController < ApplicationController
     score = 101
     # HTTParty.put("https://api.getbase.com/v2/contacts/#{user.id}", :headers => {"Accept" => "application/json", "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e", "User-Agent" => "Httparty"}, :data => {"custom_fields" => {"LO_engagement_7" => score }})
     HTTParty.put("https://api.getbase.com/v2/contacts/#{user.id}", :headers => {"Accept" => "application/json", "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e", "User-Agent" => "Httparty"}, :data => {"custom_fields" => {"LO_engagement_7" => score }})
+  end
+
+  def delete_all_base_users
+    @users = BaseUser.all 
+    @users.destroy_all
+    redirect_to '/'
   end
 
   private
