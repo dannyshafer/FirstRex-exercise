@@ -133,8 +133,8 @@ class BaseUsersController < ApplicationController
   end
 
   def update_engagement_scores
-    max_thirty_day_notes = BaseUser.order("current_month_engagement DESC")[2].current_month_engagement
-    max_sixty_day_notes = BaseUser.order("previous_month_engagement DESC")[2].previous_month_engagement
+    max_thirty_day_notes = BaseUser.order("current_month_engagement DESC")[4].current_month_engagement
+    max_sixty_day_notes = BaseUser.order("previous_month_engagement DESC")[4].previous_month_engagement
 
     BaseUser.all.each do |user|
       current_month_engagement_score = get_thirty_day_user_engagement_score(user.current_month_engagement, max_thirty_day_notes)
