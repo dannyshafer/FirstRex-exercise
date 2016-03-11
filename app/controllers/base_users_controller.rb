@@ -101,15 +101,15 @@ class BaseUsersController < ApplicationController
   end
   
   def create_users(thirty_day_notes, sixty_day_notes)
-    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}")
+    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}") #comment this to use without calling api
     thirty_day_notes.uniq.each do |user_id|
-      @base_record = client.contacts.find(user_id)
-      @user = BaseUser.create(id: user_id, name: @base_record.name, role: @base_record.title)
+      @base_record = client.contacts.find(user_id) #comment this to use without calling api
+      @user = BaseUser.create(id: user_id, name: @base_record.name, role: @base_record.title) #remove name and role keys/values to use without api
     end
     sixty_day_notes.uniq.each do |user_id|
       if BaseUser.find_by_id(user_id) == nil 
-        @base_record = client.contacts.find(user_id)
-        @user = BaseUser.create(id: user_id, name: @base_record.name, role: @base_record.title)
+        @base_record = client.contacts.find(user_id) #comment this to use without calling api
+        @user = BaseUser.create(id: user_id, name: @base_record.name, role: @base_record.title) #remove name and role keys/values to use without api
       end      
     end
   end
