@@ -88,11 +88,13 @@ class BaseUsersController < ApplicationController
       end
     end
     thirty_day_notes.uniq.each do |user_id|
-      @user = BaseUser.create(id: user_id)#, name: @base_record.name, role: @base_record.title)
+      @base_record = client.contacts.find(user_id)
+      @user = BaseUser.create(id: user_id, name: @base_record.name, role: @base_record.title)
     end
     sixty_day_notes.uniq.each do |user_id|
       if BaseUser.find_by_id(user_id) == nil 
-        @user = BaseUser.create(id: user_id)#, name: @base_record.name, role: @base_record.title)
+        @base_record = client.contacts.find(user_id)
+        @user = BaseUser.create(id: user_id, name: @base_record.name, role: @base_record.title)
       end      
     end
     thirty_day_notes.each do |user_id|
