@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/get_user_info' => 'base_users#get_user_info'
   get '/get_all_notes' => 'base_users#get_all_notes'
   get '/get_user_notes' => 'base_users#get_user_notes'
+  get '/post_scores' => 'base_users#post_engagement_score_to_base'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
