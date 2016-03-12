@@ -2,5 +2,6 @@
 
 1. Bundle.
 2. Migrate.
-3. Set your .env variables
-4. Profit.
+3. Make a file called ".env" in your root directory
+4. In .env file, set ACCESS_TOKEN variable like "ACCESS_TOKEN=OMG4cc3ss+0k3n" without the quotes
+5. On the homepage, click "Get All Users" to seed the database.
