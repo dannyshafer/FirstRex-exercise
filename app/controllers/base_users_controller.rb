@@ -158,27 +158,20 @@ class BaseUsersController < ApplicationController
   end
 
   def post_engagement_score_to_base
-    body = '{
-    "data": {
-      "customer_status": "current",
-      "tags": [
-        "baller",
-        "early-adopter"
-        ],
-        "custom_fields": {
-          "LO Score Test 7" => "101"
-        }
-      }
-      }'
     headers = {
       "Accept" => "application/json",
       "Content-Type" => "application/json",
-      "Authorization" => "Bearer e33471b597454cf865278806dd50e854a700b98fa5ef8efec5be01cc532d094e",
+      "Authorization" => "Bearer #{ENV['ACCESS_TOKEN']}",
       "User-Agent" => "Httparty",
       "/data" => "Httparty"
     }
-    response = RestClient.put "https://api.getbase.com/v2/contacts/120845285", payload: body, headers: headers
-    # response = HTTParty.put('https://api.getbase.com/v2/contacts/120845285', headers: headers, payload: body)
+    body = '{
+    "data": {
+      "name": "Dan"
+      }
+      }'
+    # response = RestClient.put "https://api.getbase.com/v2/contacts/120845285", payload: body, headers: headers
+    response = HTTParty.put('https://api.getbase.com/v2/contacts/120845285', headers: headers, payload: body)
     puts "_"*100
     puts response
     puts "_"*100
