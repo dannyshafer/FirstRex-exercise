@@ -23,7 +23,8 @@ ActiveRecord::Schema.define(version: 20160308054445) do
     t.float    "previous_month_engagement_score", default: 0.0
     t.string   "role"
     t.string   "name"
-    t.string   "other"
+    t.string   "company"
+    t.string   "sales_director"
     t.datetime "created_at",                                    null: false
     t.datetime "updated_at",                                    null: false
   end

@@ -69,6 +69,7 @@ class BaseUsersController < ApplicationController
     thirty_day_notes, sixty_day_notes = get_all_notes
     create_users(thirty_day_notes, sixty_day_notes) #to use without api, comment out this and the next line and uncomment the following two lines
     update_engagements(thirty_day_notes, sixty_day_notes)
+    update_users
     # create_users($THIRTY_DAY_NOTES, $SIXTY_DAY_NOTES)
     # update_engagements($THIRTY_DAY_NOTES, $SIXTY_DAY_NOTES)
     update_engagement_scores
@@ -114,6 +115,15 @@ class BaseUsersController < ApplicationController
     end
   end
 
+  def update_users
+    client = BaseCRM::Client.new(access_token: "#{ENV['ACCESS_TOKEN']}") #comment this to use without calling api
+    BaseUser.all.each do |user|
+      @base_record = client.contacts.find(user.id)
+      @user = BaseUser.find_by_id(user.id)
+      @user.update_attributes(other: {company: @base_record.custom_fields[:'Sub-Company Name (DBA)'], sales_director: @base_record.custom_fields[:'Sales Director']})
+    end
+  end
+
   def update_engagements(thirty_day_notes, sixty_day_notes)
     thirty_day_notes.each do |user_id|
       if BaseUser.find_by_id(user_id) != nil
@@ -133,13 +143,15 @@ class BaseUsersController < ApplicationController
   end
 
   def update_engagement_scores
-    max_thirty_day_notes = BaseUser.order("current_month_engagement DESC")[4].current_month_engagement
-    max_sixty_day_notes = BaseUser.order("previous_month_engagement DESC")[4].previous_month_engagement
+    if BaseUser.first != nil
+      max_thirty_day_notes = BaseUser.order("current_month_engagement DESC")[4].current_month_engagement
+      max_sixty_day_notes = BaseUser.order("previous_month_engagement DESC")[4].previous_month_engagement
 
-    BaseUser.all.each do |user|
-      current_month_engagement_score = get_thirty_day_user_engagement_score(user.current_month_engagement, max_thirty_day_notes)
-      previous_month_engagement_score = get_sixty_day_user_engagement_score(user.previous_month_engagement, max_sixty_day_notes)
-      user.update_attributes(current_month_engagement_score: current_month_engagement_score, previous_month_engagement_score: previous_month_engagement_score)
+      BaseUser.all.each do |user|
+        current_month_engagement_score = get_thirty_day_user_engagement_score(user.current_month_engagement, max_thirty_day_notes)
+        previous_month_engagement_score = get_sixty_day_user_engagement_score(user.previous_month_engagement, max_sixty_day_notes)
+        user.update_attributes(current_month_engagement_score: current_month_engagement_score, previous_month_engagement_score: previous_month_engagement_score)
+      end
     end
   end
 

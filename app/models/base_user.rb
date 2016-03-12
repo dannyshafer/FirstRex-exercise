@@ -102,4 +102,58 @@ class BaseUser < ActiveRecord::Base
 	def self.previous_most_engaged_user(offset = 0)
 		return BaseUser.order("previous_month_engagement DESC")[offset]
 	end
+
+	def self.company(company_name)
+		users = []
+		current_company_engagement = 0
+		previous_company_engagement = 0
+		BaseUser.all.each do |user|
+			if user.other != nil
+				container = user.other.split(",").first[12..-2]
+				if company_name == container 
+					users << user 
+					current_company_engagement += user.current_month_engagement
+					previous_company_engagement += user.previous_month_engagement
+				end 
+			end
+		end
+		return users.count, current_company_engagement, previous_company_engagement, users
+	end
+
+	def self.sales_director(sales_director_name)
+		users = []
+		current_sales_director_engagement = 0
+		previous_sales_director_engagement = 0
+		BaseUser.all.each do |user|
+			if user.other != nil
+				container = user.other.split(",").last[19..-3]
+				if sales_director_name == container 
+					users << user 
+					current_sales_director_engagement += user.current_month_engagement
+					previous_sales_director_engagement += user.previous_month_engagement
+				end 
+			end
+		end
+		return users.count, current_sales_director_engagement, previous_sales_director_engagement, users
+	end
+
+	def self.unique_companies
+		users = []
+		BaseUser.all.each do |user|
+			if user.other != nil
+				users << user.other.split(",").first[12..-2]
+			end
+		end
+		return users.uniq.sort
+	end
+
+	def self.unique_sales_directors
+		users = []
+		BaseUser.all.each do |user|
+			if user.other != nil
+				users << user.other.split(",").last[19..-3]
+			end
+		end
+		return users.uniq.sort
+	end
 end

@@ -1,0 +1,111 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+<script type="text/javascript">
+	$(function () {
+    $('#month_current').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Most recent 30 days contact engagement'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total numbers of contacts in each engagement tier'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}'
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+        },
+
+        series: [{
+            name: 'Score',
+            colorByPoint: true,
+              data: [
+            <% @assets.each do |user| %>
+                <% if user != "i" %>
+                {
+                    name: '<%= user %>',
+                    y: <%= BaseUser.company(user).last[0].current_month_engagement %>,
+                    drilldown: '4'
+                },
+                <% end %>
+            <% end %>
+            ]
+        }]
+    });
+});
+$(function () {
+    $('#month_previous').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '30-60 days contact engagement (month prior to last chart)'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Total numbers of contacts in each engagement tier'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}'
+                }
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>'
+        },
+
+        series: [{
+            name: 'Score',
+            colorByPoint: true,
+             data: [
+            <% @assets.each do |user| %>
+                <% if user != "i" %>
+                {
+                    name: '<%= user %>',
+                    y: <%= BaseUser.company(user).last[0].previous_month_engagement %>,
+                    drilldown: '4'
+                },
+                <% end %>
+            <% end %>
+            ]
+        }]
+    });
+});
+</script>
+
+<div id="month_current" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="month_previous" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
