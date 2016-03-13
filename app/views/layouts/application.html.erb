@@ -57,10 +57,12 @@
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
+        $("#spacer").toggleClass("col-lg-2");
+        $("#yield").toggleClass("col-lg-10");
     });
     </script>
-    <div class="col-lg-2"></div>
-    <div class="col-lg-10">
+    <div id="spacer" class="col-lg-2"></div>
+    <div id="yield" class="col-lg-10">
 	  <%= yield %>
 	</div>
 
