@@ -7,4 +7,8 @@ class SalesDirectorsController < ApplicationController
 		@user = BaseUser.find_by_id(params[:id])
 		@assets = BaseUser.sales_director(@user.name)
 	end
+
+	def sales_directors_users
+		
+	end
 end

@@ -6,4 +6,8 @@ class CompaniesController < ApplicationController
 	def show
 		@assets = BaseUser.company(params[:id])
 	end
+
+	def companies_users
+		
+	end
 end

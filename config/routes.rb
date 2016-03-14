@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   get '/get_user_notes' => 'base_users#get_user_notes'
   get '/post_scores' => 'base_users#post_engagement_score_to_base'
   get '/companies' => 'companies#index'
+  get '/companies_users' => 'companies#companies_users'
+  get '/sales_directors_users' => 'sales_directors#sales_directors_users'
   get '/companies/(:id)' => 'companies#show'
   get '/sales_directors' => 'sales_directors#index'
   get '/sales_directors/(:id)' => 'sales_directors#show'

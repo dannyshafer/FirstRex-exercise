@@ -1,0 +1,14 @@
+<% BaseUser.unique_companies.each do |company| %>
+<div class="row">
+	<div class="col-lg-1"></div>
+	<div class="col-lg-10">
+		<h3><%= company %></h3>
+		<h3>___________</h3>
+			<% BaseUser.company(company).last.each do |user| %>
+			<%=  user.name %>:
+			<%=  user.current_month_engagement %>.
+			<% end %>
+	</div>
+	<div class="col-lg-1"></div>
+</div>
+<% end %>
