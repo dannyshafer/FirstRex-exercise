@@ -170,23 +170,18 @@ class BaseUsersController < ApplicationController
   end
 
   def post_engagement_score_to_base
-    headers = {
-      "Accept" => "application/json",
-      "Content-Type" => "application/json",
-      "Authorization" => "Bearer #{ENV['ACCESS_TOKEN']}",
-      "User-Agent" => "Httparty",
-      "/data" => "Httparty"
-    }
-    body = '{
-    "data": {
-      "name": "Dan"
-      }
-      }'
-    # response = RestClient.put "https://api.getbase.com/v2/contacts/120845285", payload: body, headers: headers
-    response = HTTParty.put('https://api.getbase.com/v2/contacts/120845285', headers: headers, payload: body)
-    puts "_"*100
-    puts response
-    puts "_"*100
+    BaseUser.all.each do |user|
+      if user.current_month_engagement != nil
+        auth = "Bearer " + ENV['ACCESS_TOKEN']
+        data = {}
+        data['data'] = {}
+        data['data']['custom_fields'] = {}
+        data['data']['custom_fields']['LO Score Test 7'] = user.current_month_engagement_score
+        data['data']['custom_fields']['LO Score Test 6'] = user.previous_month_engagement_score
+        body = data.to_json
+        @title = HTTParty.put("https://api.getbase.com/v2/contacts/#{user.id}", :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json', 'User-Agent' => 'Ruby', 'Authorization' => auth}, :body => body)
+      end
+    end
     redirect_to '/'
   end
 
