@@ -16,7 +16,7 @@
         },
         yAxis: {
             title: {
-                text: 'Total numbers of engagements by sales director'
+                text: 'Total numbers of engagements by sales director\'s loan officers'
             }
 
         },
@@ -45,7 +45,7 @@
                 <% if user != "i" %>
                 {
                     name: '<%= user %>',
-                    y: <%= BaseUser.sales_director(user).last[0].current_month_engagement %>,
+                    y: <%= BaseUser.sales_director(user)[1] %>,
                     drilldown: '4'
                 },
                 <% end %>
@@ -67,7 +67,7 @@ $(function () {
         },
         yAxis: {
             title: {
-                text: 'Total numbers of engagements by sales director'
+                text: 'Total numbers of engagements by sales director\'s loan officers'
             }
 
         },
@@ -96,7 +96,7 @@ $(function () {
                 <% if user != "i" %>
                 {
                     name: '<%= user %>',
-                    y: <%= BaseUser.sales_director(user).last[0].previous_month_engagement %>,
+                    y: <%= BaseUser.sales_director(user)[2] %>,
                     drilldown: '4'
                 },
                 <% end %>
