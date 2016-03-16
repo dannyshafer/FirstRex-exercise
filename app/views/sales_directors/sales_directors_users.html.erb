@@ -1,12 +1,14 @@
-<% BaseUser.unique_sales_directors.each do |user| %>
+<% BaseUser.unique_sales_directors.each do |director| %>
 <div class="row">
 	<div class="col-lg-1"></div>
 	<div class="col-lg-10">
-		<h3><%= user %></h3>
+		<h3><%= director %></h3>
 		<h3>___________</h3>
-			<% BaseUser.sales_director(user).last.each do |user| %>
-			<%=  user.name %>:
-			<%=  user.current_month_engagement %>.
+			<% BaseUser.sales_director(director).last.each do |user| %>
+			<% if user.name != director %>
+				<%=  user.name %>:
+				<%=  user.current_month_engagement %>.
+				<% end %>
 			<% end %>
 	</div>
 	<div class="col-lg-1"></div>
