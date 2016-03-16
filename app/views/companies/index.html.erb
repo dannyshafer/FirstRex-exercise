@@ -45,7 +45,7 @@
                 <% if user != "i" %>
                 {
                     name: '<%= user %>',
-                    y: <%= BaseUser.company(user).last[0].current_month_engagement %>,
+                    y: <%= BaseUser.company(user)[1] %>,
                     drilldown: '4'
                 },
                 <% end %>
@@ -96,7 +96,7 @@ $(function () {
                 <% if user != "i" %>
                 {
                     name: '<%= user %>',
-                    y: <%= BaseUser.company(user).last[0].previous_month_engagement %>,
+                    y: <%= BaseUser.company(user)[2] %>,
                     drilldown: '4'
                 },
                 <% end %>
